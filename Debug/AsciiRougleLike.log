@@ -1,6 +1,2 @@
 ﻿  GameSystem.cpp
-C:\Users\John\Desktop\Learning Programming\AsciiRouleLike\AsciiRougleLike\GameSystem.cpp(150,20): warning C4018:  '<': signed/unsigned mismatch
-C:\Users\John\Desktop\Learning Programming\AsciiRouleLike\AsciiRougleLike\GameSystem.cpp(151,21): warning C4018:  '<': signed/unsigned mismatch
-C:\Users\John\Desktop\Learning Programming\AsciiRouleLike\AsciiRougleLike\GameSystem.cpp(161,20): warning C4018:  '<': signed/unsigned mismatch
-C:\Users\John\Desktop\Learning Programming\AsciiRouleLike\AsciiRougleLike\GameSystem.cpp(162,21): warning C4018:  '<': signed/unsigned mismatch
   AsciiRougleLike.vcxproj -> C:\Users\John\Desktop\Learning Programming\AsciiRouleLike\AsciiRougleLike\Debug\AsciiRougleLike.exe

@@ -1,6 +1,8 @@
 #include "GameSystem.h"
+#include "VectorHelper.h"
+#include "CombatManager.h"
 #include <conio.h>
-#include <windows.h>
+
 
 //Contstructor
 GameSystem::GameSystem(string levelFile) {
@@ -87,83 +89,101 @@ void GameSystem::combatBegins(char monster) {
 	//Transition
 	loadingScreen();
 	drawCombat(monster);
-	endingScreen();
+	bool victory = conductCombat(monster);
+	endingScreen(victory);
 }
 
 void GameSystem::loadingScreen() {
 	system("cls");
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 55; j++) {
-			printf("X");
-			Sleep(1);
-		}
-		printf("\n");
-	}
-	Sleep(2000);
+	_frameGraphic.clear();
+
+	VectorHelper v1;
+	v1.loadVector(_frameGraphic, "transitionbackground.txt");
+	v1.loadVector(_textGraphic, "introtext.txt");
+	v1.overlayVector(_textGraphic, _frameGraphic, 8, 5);
+	v1.printfVector(_frameGraphic, true);
+
+	_frameGraphic.clear();
+	_textGraphic.clear();
 }
 
-void GameSystem::endingScreen() {
+void GameSystem::endingScreen(bool victory) {
 	system("cls");
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 55; j++) {
-			printf("X");
-		}
-		printf("\n");
-	}
-	Sleep(2000);
 
+	string framefile;
+	if (victory == true) {
+		framefile = "wintext.txt";
+	}
+	else {
+		framefile = "losetext.txt";
+	}
+
+	VectorHelper v1;
+	v1.loadVector(_frameGraphic, "transitionbackground.txt");
+	v1.loadVector(_textGraphic, framefile);
+	v1.overlayVector(_textGraphic, _frameGraphic, 8, 5);
+	v1.printfVector(_frameGraphic, true);
+
+	_frameGraphic.clear();
+	_textGraphic.clear();
 }
 
 void GameSystem::drawCombat(char monster) {
+	system("cls");
 	// Establish a pokemon esk combat screen
 	// laod the specific monster into the file
 	string first(1, monster);
 	string monsterFile = first + ".txt";
 
-	ifstream file;
-	file.open(monsterFile);
-	if (file.fail()) {
-		perror(monsterFile.c_str());
-		system("PAUSE");
-		exit(1);
-	}
-	string line;
-	while (getline(file, line)) {
-		_monsterGraphic.push_back(line);
-	}
-	file.close();
+	_frameGraphic.clear();
+	_monsterGraphic.clear();
+	_playerGraphic.clear();
+	_textGraphic.clear();
 
-	string framefile = "frame.txt";
-	file.open(framefile);
-	if (file.fail()) {
-		perror(framefile.c_str());
-		system("PAUSE");
-		exit(1);
-	}
-	while (getline(file, line)) {
-		_frameGraphic.push_back(line);
-	}
-	file.close();
-	system("cls");
-	//Overlay the monster grapghic to the frame graphic starting at x = 5 and y = 2 
-	combine2dGraphics(_monsterGraphic, _frameGraphic, 5, 2);
-	for (int y = 0; y < _frameGraphic.size() ; y++) {
-		for (int x = 0; x < _frameGraphic[y].length(); x++) {
-			printf("%c", _frameGraphic[y][x]);
-		}
-		printf("\n");
-	}
-	system("PAUSE");
+	VectorHelper v1;
+
+	v1.loadVector(_frameGraphic, "frame.txt");
+	v1.loadVector(_monsterGraphic, monsterFile);
+	v1.loadVector(_playerGraphic, "playergraphic.txt");
+	v1.loadVector(_textGraphic, "combatoptions.txt");
+
+	v1.overlayVector(_monsterGraphic, _frameGraphic, 36, 1);
+	v1.overlayVector(_playerGraphic, _frameGraphic, 1, 1);
+
+	v1.printfVector(_frameGraphic, false);
+	v1.printfVector(_textGraphic, false);
+
+	system("Pause");
+
+	_textGraphic.clear();
+	_frameGraphic.clear();
+	_monsterGraphic.clear();
+	_playerGraphic.clear();
 }
-	//Now monster file will contain the data
-void GameSystem::combine2dGraphics(vector <string> _instertGraphic, vector <string> _main, int start_x, int start_y) {
-	// Loop through and overlay
-	for (int y = 0; y < _instertGraphic.size(); y++) {
-		for (int x = 0; x < _instertGraphic[y].length(); x++) {
-			//For every element in insert_graphic
-			_main[y + start_y][x + start_x] = _instertGraphic[y][x];
+
+//Player engages in combat with a monster
+bool GameSystem::conductCombat(char monster) {
+	CombatManager combatManager;
+	combatManager.buildMonster(monster);
+
+	bool victory = false;
+	bool combatDone = false;
+
+	while (combatDone != true) {
+		char choice;
+
+		cin >> choice;
+
+		switch (choice) {
+		case '1':
+			break;
+		case '2':
+			break;
+		case '3':
+			break;
+		default:
+
 		}
 	}
-
-	_frameGraphic = _main;
+	return true;
 }

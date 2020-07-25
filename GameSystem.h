@@ -13,9 +13,9 @@ public:
 	void processMove(int x, int y);
 	void combatBegins(char monster);
 	void loadingScreen();
-	void endingScreen();
+	void endingScreen(bool victory);
 	void drawCombat(char monster);
-	void combine2dGraphics(vector <string> _instertGraphic, vector <string> _main, int start_x, int start_y);
+	bool conductCombat(char monster);
 
 private:
 	Player _player;
@@ -23,6 +23,7 @@ private:
 	vector <string> _monsterGraphic;
 	vector <string> _playerGraphic;
 	vector <string> _frameGraphic;
+	vector <string> _textGraphic;
 };
 
 

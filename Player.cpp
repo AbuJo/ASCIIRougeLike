@@ -26,7 +26,6 @@ void Player::setPosition(int x, int y) {
 }
 
 //getters
-
 void Player::getPosition(int& x, int& y) {
 	x = _x;
 	y = _y;
