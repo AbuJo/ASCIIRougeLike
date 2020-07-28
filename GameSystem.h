@@ -1,6 +1,9 @@
 #pragma once
 #include "Player.h"
 #include "Level.h"
+#include "VectorHelper.h"
+#include "CombatManager.h"
+#include "GameDisplay.h"
 #include <string>
 
 using namespace std;
@@ -14,8 +17,7 @@ public:
 	void combatBegins(char monster);
 	void loadingScreen();
 	void endingScreen(bool victory);
-	void drawCombat(char monster);
-	bool conductCombat(char monster);
+	bool combat(char monster);
 
 private:
 	Player _player;

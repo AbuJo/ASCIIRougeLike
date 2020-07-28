@@ -28,3 +28,11 @@ void Monster::setHealth(int healthMod) {
 int Monster::getHealth() {
 	return _health;
 }
+
+int Monster::getAttack() {
+	return _attack;
+}
+
+int Monster::getDefence() {
+	return _defence;
+}

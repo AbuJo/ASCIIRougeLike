@@ -26,9 +26,16 @@ void CombatManager::buildMonster(char monster) {
 	file.close();
 
 	//Now need to convert each line of _monsterStats into ints to initialise the goblin
+	int health = stoi(_monsterStats[0]);
+	int attack = stoi(_monsterStats[1]);
+	int defence = stoi(_monsterStats[2]);
+
+	_monster.init(health, attack, defence);
+
 
 }
 
+// Attackers attack damage and degenders defence stat.
 int CombatManager::attack(int attack, int defence) {
 	// Judge an attack based on whether it outrolls a defence stat
 	
@@ -42,4 +49,27 @@ int CombatManager::attack(int attack, int defence) {
 		attackReturn = attack*-1;
 	}
 	return attackReturn;
+}
+
+// Get a monsters attack damage
+int CombatManager::getMonsterAttack() {
+	return _monster.getAttack();
+}
+
+// Get a monsters Defence
+int CombatManager::getMonsterDefence() {
+	return _monster.getDefence();
+}
+
+int CombatManager::getMonsterHealth() {
+	return _monster.getHealth();
+}
+
+//reduce health of the monster
+void CombatManager::damageMonster(int attack) {
+	_monster.setHealth(attack);
+	if (_monster.getHealth() < 0) {
+		//set health to 0
+		_monster.setHealth(_monster.getHealth()*-1);
+	}
 }

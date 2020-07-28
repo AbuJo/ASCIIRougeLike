@@ -1,8 +1,5 @@
 #include "GameSystem.h"
-#include "VectorHelper.h"
-#include "CombatManager.h"
 #include <conio.h>
-
 
 //Contstructor
 GameSystem::GameSystem(string levelFile) {
@@ -15,8 +12,6 @@ void GameSystem::playGame() {
 	bool badInput = false;
 	while (isDone != true) {
 		system("CLS");
-
-
 		_level.printLevel();
 		if(badInput == true){
 			printf("Invalid Input\n");
@@ -78,18 +73,34 @@ void GameSystem::processMove(int x, int y) {
 		break;
 
 	case 'G':
-		//Combat Begins
+		//Combat with ghost
 		combatBegins('G');
 		break;
-	}
 
+	case 'H':
+		//Combat with ghost
+		combatBegins('H');
+		break;
+
+	case 'h':
+		//Combat with ghost
+		_player.addHealthPot(1);
+		_player.setPosition(x, y);
+		_level.setTile(x, y, '@');
+		_level.setTile(prevX, prevY, '.');
+
+	case 'S':
+		// Set next level. save this level.
+
+		break;
+
+	}
 }
 
 void GameSystem::combatBegins(char monster) {
 	//Transition
 	loadingScreen();
-	drawCombat(monster);
-	bool victory = conductCombat(monster);
+	bool victory = combat(monster);
 	endingScreen(victory);
 }
 
@@ -100,7 +111,7 @@ void GameSystem::loadingScreen() {
 	VectorHelper v1;
 	v1.loadVector(_frameGraphic, "transitionbackground.txt");
 	v1.loadVector(_textGraphic, "introtext.txt");
-	v1.overlayVector(_textGraphic, _frameGraphic, 8, 5);
+	v1.overlayVector(_textGraphic, _frameGraphic, 10, 5);
 	v1.printfVector(_frameGraphic, true);
 
 	_frameGraphic.clear();
@@ -126,64 +137,100 @@ void GameSystem::endingScreen(bool victory) {
 
 	_frameGraphic.clear();
 	_textGraphic.clear();
+
+	if (victory == false) {
+		Sleep(2000);
+		exit(0);
+	}
+
+
 }
 
-void GameSystem::drawCombat(char monster) {
-	system("cls");
-	// Establish a pokemon esk combat screen
-	// laod the specific monster into the file
-	string first(1, monster);
-	string monsterFile = first + ".txt";
+bool GameSystem::combat(char monster) {
+	GameDisplay gameDisplay;
 
-	_frameGraphic.clear();
-	_monsterGraphic.clear();
-	_playerGraphic.clear();
-	_textGraphic.clear();
-
-	VectorHelper v1;
-
-	v1.loadVector(_frameGraphic, "frame.txt");
-	v1.loadVector(_monsterGraphic, monsterFile);
-	v1.loadVector(_playerGraphic, "playergraphic.txt");
-	v1.loadVector(_textGraphic, "combatoptions.txt");
-
-	v1.overlayVector(_monsterGraphic, _frameGraphic, 36, 1);
-	v1.overlayVector(_playerGraphic, _frameGraphic, 1, 1);
-
-	v1.printfVector(_frameGraphic, false);
-	v1.printfVector(_textGraphic, false);
-
-	system("Pause");
-
-	_textGraphic.clear();
-	_frameGraphic.clear();
-	_monsterGraphic.clear();
-	_playerGraphic.clear();
-}
-
-//Player engages in combat with a monster
-bool GameSystem::conductCombat(char monster) {
 	CombatManager combatManager;
 	combatManager.buildMonster(monster);
 
+	gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, 0, "");
+
+
 	bool victory = false;
 	bool combatDone = false;
+	char turn = 'P';
 
 	while (combatDone != true) {
 		char choice;
-
 		cin >> choice;
+		string message = "";
+		int playerAttack = 0;
+		int monsterAttack = 0;
 
 		switch (choice) {
 		case '1':
+			//Attack the Monster
+			playerAttack = combatManager.attack(_player.getAttack(), combatManager.getMonsterDefence());
+			combatManager.damageMonster(playerAttack);
+
+			//Animate Monster Damaged
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 1, 0, ""); Sleep(100);
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, -1, 0, ""); Sleep(100);
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, 0, ""); Sleep(100);
+
+			Sleep(800);
+
+			//Monster Attacks the Player
+			monsterAttack = combatManager.attack(combatManager.getMonsterAttack(), _player.getDefence());
+			_player.setHealth(monsterAttack);
+
+			//Animate Player Damaged
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, 1, ""); Sleep(100);
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, -1, ""); Sleep(100);
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, 0, ""); Sleep(100);
+
 			break;
 		case '2':
+			//Health Potion Used.
+			if (_player.getHealthPots() == 0) {
+				message = "No more health potions to use";
+			}
+			else {
+				_player.addHealthPot(-1);
+				_player.setHealth(20);
+			}
+			gameDisplay.drawScreen(combatManager.getMonsterHealth(), monster, _player, 0, 0, message);
 			break;
 		case '3':
+			//Run away
+			combatDone = true;
+			victory = false;
 			break;
 		default:
+			//Bad Input
+			break;
+		}
+
+		if (_player.getHealth() <= 0) {
+			combatDone = true;
+			victory = false;
+		} else if (combatManager.getMonsterHealth() <= 0) {
+			combatDone = true;
+			victory = true;
+			int experience = 0;
+			switch (monster) {
+				case 'G':
+					experience = 50;
+					break;
+				case 'H':
+					experience = 70;
+					break;
+			}
+			_player.setExperience(experience);
 
 		}
+		else {
+			turn = 'M';
+		}
 	}
-	return true;
+	return victory;
 }

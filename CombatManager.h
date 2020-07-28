@@ -14,6 +14,10 @@ class CombatManager
 public:
 	void buildMonster(char monster);
 	int attack(int attack, int defence);
+	int getMonsterAttack();
+	int getMonsterDefence();
+	int getMonsterHealth();
+	void damageMonster(int attack);
 
 	CombatManager();
 	~CombatManager();

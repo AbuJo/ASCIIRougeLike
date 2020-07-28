@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CombatManager.cpp" />
+    <ClCompile Include="GameDisplay.cpp" />
     <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
@@ -133,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CombatManager.h" />
+    <ClInclude Include="GameDisplay.h" />
     <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Monster.h" />

@@ -12,6 +12,8 @@ public:
 
 	//getters
 	void getPosition(int& x, int& y);
+	int getAttack();
+	int getDefence();
 	int getHealth();
 
 private:

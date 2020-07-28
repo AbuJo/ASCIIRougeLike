@@ -25,8 +25,43 @@ void Player::setPosition(int x, int y) {
 	_y = y;
 }
 
+void Player::setHealth(int healthMod) {
+	_health += healthMod;
+}
+
+void Player::addHealthPot(int n) {
+	_healthpots += n;
+}
+
+void Player::setExperience(int experience) {
+	_experience += experience;
+	if (_experience >= 100) {
+		_experience -= 100;
+		_level += 1;
+		_attack += 1;
+		_defence += 1;
+		_health += 10;
+	}
+}
+
 //getters
 void Player::getPosition(int& x, int& y) {
 	x = _x;
 	y = _y;
+}
+
+int Player::getHealth() {
+	return _health;
+}
+
+int Player::getAttack() {
+	return _attack;
+}
+
+int Player::getDefence() {
+	return _defence;
+}
+
+int Player::getHealthPots() {
+	return _healthpots;
 }
